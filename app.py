@@ -4,9 +4,18 @@ import cv2
 from model import predict_video, model
 
 
-st.set_page_config(page_title="Drone Vision: Object Detection", layout="wide")
+st.set_page_config(page_title="VisAI: Object Detection", layout="wide")
 st.title("Drone Vision: Object Detection")
 
+st.markdown(
+    """
+    <style>
+    section[data-testid="stSidebar"] {
+        width: 350px !important;
+    }
+    </style>
+    """, unsafe_allow_html=True,
+)
 with st.sidebar:
     video_file = st.file_uploader("Upload Video", type=["mp4", "mov", "avi"])
         
