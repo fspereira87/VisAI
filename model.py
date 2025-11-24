@@ -1,11 +1,13 @@
 from ultralytics import YOLO
 
-model = YOLO("best.pt")
+model = YOLO("model2_yvn11.pt")
+
 
 def predict_video(video_path):
-    results = model.predict(
+    results = model.track(
         source = video_path, 
         save=False,
+        tracker="bytetrack.yaml",
         show=True,
         device='gpu',
         conf=0.80)
