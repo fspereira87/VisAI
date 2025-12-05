@@ -1,6 +1,6 @@
 from ultralytics import YOLO
 
-model = YOLO("model2_yvn11.pt")
+model = YOLO("model3.pt")
 
 
 def predict_video(video_path):
