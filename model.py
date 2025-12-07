@@ -15,12 +15,15 @@ def predict_video(video_path, frame_placeholder=None):
         if not ret:
             break
 
-        results = model.predict(
+        results = model.track(
             source=frame,
             save=False,
             show=False,  
             device="cpu",
             conf=confidence_level,
+            iou=0.5,
+            tracker="bytetrack.yaml",
+            presist= True,
             verbose=False  
         )
         
