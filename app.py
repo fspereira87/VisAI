@@ -11,26 +11,62 @@ st.markdown(
     """
     <style>
     section[data-testid="stSidebar"] {
-        width: 350px !important;
+        width: 380px !important;
     }
     </style>
-    """, unsafe_allow_html=True,
+    """,
+    unsafe_allow_html=True,
 )
 
 with st.sidebar:
-    video_file = st.file_uploader("Upload Video", type=["mp4", "mov", "avi"])
+    st.header("Demo Videos")
+    col1, col2 = st.columns(2)
+    with col1:
+        demo_btn1 = st.button("Demos 1: Desert Road", use_container_width=True)
+    with col2:
+        demo_btn2 = st.button("Demos 2: Night traffic", use_container_width=True)
+
     st.divider()
+    video_file = st.file_uploader("Upload Video", type=["mp4", "mov", "avi"])
     st.header("Detection Settings")
     confidence_level = st.slider("Confidence Threshold", 0.0, 1.0, 0.5, 0.05)
     show_labels = st.checkbox("Show Labels", True)
     show_confidence = st.checkbox("Show Confidence Scores", True)
 
-if video_file:
-    temp_input = tempfile.NamedTemporaryFile(delete=False, suffix='.mp4')
-    temp_input.write(video_file.read())
-    video_path = temp_input.name
-    temp_input.close()
+if "demo_choice" not in st.session_state:
+    st.session_state.demo_choice = None
 
+if demo_btn1:
+    st.session_state.demo_choice = "demo1"
+
+if demo_btn2:
+    st.session_state.demo_choice = "demo2"
+
+video_path = None
+
+if st.session_state.demo_choice == "demo1" and not video_file:
+    with open("/Users/Fspereira_dev/VisAI/car-driving-down-desert-road.mp4", "rb") as f:
+        demo_bytes = f.read()
+    temp_input = tempfile.NamedTemporaryFile(delete=False, suffix=".mp4")
+    temp_input.write(demo_bytes)
+    temp_input.close()
+    video_path = temp_input.name
+
+elif st.session_state.demo_choice == "demo2" and not video_file:
+    with open("/Users/Fspereira_dev/VisAI/spinning-down-between-buildings.mp4", "rb") as f:
+        demo_bytes = f.read()
+    temp_input = tempfile.NamedTemporaryFile(delete=False, suffix=".mp4")
+    temp_input.write(demo_bytes)
+    temp_input.close()
+    video_path = temp_input.name
+
+elif video_file:
+    temp_input = tempfile.NamedTemporaryFile(delete=False, suffix=".mp4")
+    temp_input.write(video_file.read())
+    temp_input.close()
+    video_path = temp_input.name
+
+if video_path:
     cap_info = cv2.VideoCapture(video_path)
     fps = cap_info.get(cv2.CAP_PROP_FPS)
     total_frames = int(cap_info.get(cv2.CAP_PROP_FRAME_COUNT))
@@ -46,18 +82,18 @@ if video_file:
     col4.metric("Resolution", f"{width}x{height}")
 
     st.divider()
-        
+
     if st.button("▶️ Run Prediction", use_container_width=True):
         st.write("Processing video, please wait...")
         with st.sidebar:
             st.write("![Your Awesome GIF](https://i.makeagif.com/media/10-08-2020/QMj7da.gif)")
 
-        temp_output = tempfile.NamedTemporaryFile(delete=False, suffix='.mp4')
+        temp_output = tempfile.NamedTemporaryFile(delete=False, suffix=".mp4")
         output_path = temp_output.name
         temp_output.close()
 
         avi_output = output_path.replace(".mp4", ".avi")
-        fourcc = cv2.VideoWriter_fourcc(*'MJPG')
+        fourcc = cv2.VideoWriter_fourcc(*"MJPG")
         out = cv2.VideoWriter(avi_output, fourcc, fps, (width, height))
 
         progress_bar = st.progress(0)
@@ -83,10 +119,8 @@ if video_file:
                 out.write(annotated_frame)
 
                 if frame_count % 10 == 0:
-                    progress = frame_count / total_frames
-                    progress_bar.progress(min(progress, 1.0))
+                    progress_bar.progress(min(frame_count / total_frames, 1.0))
                     status_text.text(f"Processing frame {frame_count}/{total_frames}...")
-        
         except Exception as e:
             st.error(f"An error occurred: {str(e)}")
         finally:
@@ -96,7 +130,6 @@ if video_file:
             status_text.text(f"Processed {frame_count} frames")
 
         status_text.text("Converting video to MP4 (H.264)...")
-
         mp4_output = avi_output.replace(".avi", ".mp4")
         os.system(f"ffmpeg -y -i {avi_output} -vcodec libx264 -preset fast -crf 22 {mp4_output}")
 
@@ -121,13 +154,12 @@ if video_file:
                 label="Download Processed Video",
                 data=video_bytes,
                 file_name="detection.mp4",
-                mime="video/mp4"
+                mime="video/mp4",
             )
         else:
             st.error("Processed video file is not available.")
 
         try:
-            os.unlink(video_path)
             os.unlink(output_path)
             os.unlink(avi_output)
         except:
