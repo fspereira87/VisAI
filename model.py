@@ -1,7 +1,7 @@
 from ultralytics import YOLO
 import cv2
 
-model = YOLO("model3.pt")
+model = YOLO("KC_model.pt")
 
 
 def predict_video(video_path, frame_placeholder=None):
