@@ -50,7 +50,7 @@ if demo_btn3:
 video_path = None
 
 if st.session_state.demo_choice == "demo1" and not video_file:
-    with open("/Users/Fspereira_dev/VisAI/car-driving-down-desert-road.mp4", "rb") as f:
+    with open("car-driving-down-desert-road.mp4", "rb") as f:
         demo_bytes = f.read()
     temp_input = tempfile.NamedTemporaryFile(delete=False, suffix=".mp4")
     temp_input.write(demo_bytes)
@@ -58,7 +58,7 @@ if st.session_state.demo_choice == "demo1" and not video_file:
     video_path = temp_input.name
 
 elif st.session_state.demo_choice == "demo2" and not video_file:
-    with open("/Users/Fspereira_dev/VisAI/spinning-down-between-buildings.mp4", "rb") as f:
+    with open("spinning-down-between-buildings.mp4", "rb") as f:
         demo_bytes = f.read()
     temp_input = tempfile.NamedTemporaryFile(delete=False, suffix=".mp4")
     temp_input.write(demo_bytes)
@@ -66,7 +66,7 @@ elif st.session_state.demo_choice == "demo2" and not video_file:
     video_path = temp_input.name
 
 elif st.session_state.demo_choice == "demo3" and not video_file:
-    with open("/Users/Fspereira_dev/Downloads/12762044-hd_1920_1080_60fps.mp4", "rb") as f:
+    with open("12762044-hd_1920_1080_60fps.mp4", "rb") as f:
         demo_bytes = f.read()
     temp_input = tempfile.NamedTemporaryFile(delete=False, suffix=".mp4")
     temp_input.write(demo_bytes)
