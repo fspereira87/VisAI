@@ -20,11 +20,13 @@ st.markdown(
 
 with st.sidebar:
     st.header("Demo Videos")
-    col1, col2 = st.columns(2)
+    col1, col2, col3 = st.columns(3)
     with col1:
         demo_btn1 = st.button("Demos 1: Desert Road", use_container_width=True)
     with col2:
         demo_btn2 = st.button("Demos 2: Night traffic", use_container_width=True)
+    with col3:
+        demo_btn3 = st.button("Demos 3: Military Sample", use_container_width=True)
 
     st.divider()
     video_file = st.file_uploader("Upload Video", type=["mp4", "mov", "avi"])
@@ -42,6 +44,9 @@ if demo_btn1:
 if demo_btn2:
     st.session_state.demo_choice = "demo2"
 
+if demo_btn3:
+    st.session_state.demo_choice = "demo3"
+
 video_path = None
 
 if st.session_state.demo_choice == "demo1" and not video_file:
@@ -54,6 +59,14 @@ if st.session_state.demo_choice == "demo1" and not video_file:
 
 elif st.session_state.demo_choice == "demo2" and not video_file:
     with open("/Users/Fspereira_dev/VisAI/spinning-down-between-buildings.mp4", "rb") as f:
+        demo_bytes = f.read()
+    temp_input = tempfile.NamedTemporaryFile(delete=False, suffix=".mp4")
+    temp_input.write(demo_bytes)
+    temp_input.close()
+    video_path = temp_input.name
+
+elif st.session_state.demo_choice == "demo3" and not video_file:
+    with open("/Users/Fspereira_dev/Downloads/12762044-hd_1920_1080_60fps.mp4", "rb") as f:
         demo_bytes = f.read()
     temp_input = tempfile.NamedTemporaryFile(delete=False, suffix=".mp4")
     temp_input.write(demo_bytes)
